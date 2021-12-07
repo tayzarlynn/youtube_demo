@@ -5,10 +5,11 @@ class PlayerBloc extends ChangeNotifier {
   late AudioPlayer player;
 
   PlayerBloc(String url) {
-    _init(url);
+    print(url);
+   _init(url);
   }
 
-  ///just testing purpose for playing video
+  ///just testing purpose with just audio
   void _init(String url) async {
     player = AudioPlayer();
     try {

@@ -76,8 +76,14 @@ class SearchResultListView extends StatelessWidget {
         child: ListView.separated(
             itemBuilder: (context, index) => SearchResultItemView(
                   video: bloc.searchVideos?[index],
-                  onTap: (id) => bloc.onTapSong(id).then((value) =>
-                      navigateToNextPage(context,  PlayerPage(url: value,))),
+                  onTap: (id) => bloc.onTapSong(id).then(
+                        (value) => navigateToNextPage(
+                          context,
+                          PlayerPage(
+                            url: value,
+                          ),
+                        ),
+                      ),
                 ),
             separatorBuilder: (context, index) => const Divider(),
             itemCount: bloc.searchVideos?.length ?? 0),
