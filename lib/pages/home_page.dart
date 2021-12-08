@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_demo/blocs/home_bloc.dart';
+import 'package:youtube_demo/pages/download_page.dart';
 import 'package:youtube_demo/pages/player_page.dart';
 import 'package:youtube_demo/utils/utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -79,7 +80,7 @@ class SearchResultListView extends StatelessWidget {
                   onTap: (id) => bloc.onTapSong(id).then(
                         (value) => navigateToNextPage(
                           context,
-                          PlayerPage(
+                          DownloadPage(
                             url: value,
                           ),
                         ),
