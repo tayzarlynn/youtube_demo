@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_demo/blocs/home_bloc.dart';
-import 'package:youtube_demo/pages/download_page.dart';
-import 'package:youtube_demo/pages/player_page.dart';
+import 'package:youtube_demo/blocs/library_bloc.dart';
+import 'package:youtube_demo/presentation/pages/download_page.dart';
+import 'package:youtube_demo/presentation/pages/library_page.dart';
 import 'package:youtube_demo/utils/utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -96,9 +97,7 @@ class SearchResultListView extends StatelessWidget {
 class SearchResultItemView extends StatelessWidget {
   final Function(String) onTap;
   final SearchVideo? video;
-  const SearchResultItemView(
-      {required this.video, required this.onTap, Key? key})
-      : super(key: key);
+  const SearchResultItemView({required this.video, required this.onTap, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +123,12 @@ class SearchResultItemView extends StatelessWidget {
             const SizedBox(
               width: 16,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  child: Text(
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
                     video?.title ?? 'Song Title',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -140,13 +138,10 @@ class SearchResultItemView extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: Text(
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Text(
                     video?.author ?? 'Author',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -156,9 +151,23 @@ class SearchResultItemView extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            PopupMenuButton(
+              onSelected: (value) {
+                print("add song to libary");
+                context.read<LibraryBloc>().addSong(video!);
+                navigateToNextPage(context, const LibraryPage());
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 1,
+                  child: Text("Add to Library"),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
