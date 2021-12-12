@@ -40,6 +40,7 @@ dependencies:
   easy_debounce: ^2.0.1
   just_audio: ^0.9.18
   flutter_cache_manager: ^3.3.0
+  dio: ^4.0.4
 
 dev_dependencies:
   flutter_test:

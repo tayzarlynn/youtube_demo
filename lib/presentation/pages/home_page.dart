@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_demo/blocs/home_bloc.dart';
 import 'package:youtube_demo/blocs/library_bloc.dart';
-import 'package:youtube_demo/presentation/pages/download_page.dart';
 import 'package:youtube_demo/presentation/pages/library_page.dart';
+import 'package:youtube_demo/presentation/pages/player_page.dart';
 import 'package:youtube_demo/utils/utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -13,18 +13,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => HomeBloc(),
-        child: Scaffold(
-          body: SafeArea(
-            child: Column(
-              children: const [
-                SearchView(),
-                SearchResultListView(),
-              ],
-            ),
-          ),
-        ));
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: const [
+            SearchView(),
+            SearchResultListView(),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -81,7 +79,7 @@ class SearchResultListView extends StatelessWidget {
                   onTap: (id) => bloc.onTapSong(id).then(
                         (value) => navigateToNextPage(
                           context,
-                          DownloadPage(
+                          PlayerPage(
                             url: value,
                           ),
                         ),

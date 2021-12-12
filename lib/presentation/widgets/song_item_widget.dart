@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:youtube_demo/blocs/home_bloc.dart';
+import 'package:youtube_demo/blocs/library_bloc.dart';
 import 'package:youtube_demo/data/vos/song_vo.dart';
+import 'package:provider/provider.dart';
 
 class SongItemWidget extends StatelessWidget {
   final SongVo song;
@@ -12,7 +17,14 @@ class SongItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
+        // if song is not downloaded, stream it
+        // if song is downloaded, play it using downloaded file
+        if (song.filePath != null) {
+          final player = AudioPlayer();
+          await player.setFilePath(song.filePath!);
+          player.play();
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(left: 16, top: 8),
@@ -64,12 +76,52 @@ class SongItemWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
+            if (song.filePath != null) const Icon(Icons.download_for_offline_rounded),
+            Selector<LibraryBloc, DownloadTask?>(
+              selector: (_, libraryBloc) => libraryBloc.currenDownloadTask,
+              builder: (_, downloadTask, __) {
+                if (downloadTask == null) {
+                  return const SizedBox();
+                }
+                if (downloadTask.id != song.id) {
+                  return const SizedBox();
+                }
+                if (downloadTask.isFinished) {
+                  return const SizedBox();
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
             PopupMenuButton(
+              onSelected: (value) async {
+                switch (value) {
+                  case 0:
+                    context.read<LibraryBloc>().removeSong(song.id);
+                    break;
+                  case 1:
+                    print("remove form download");
+                    break;
+                  case 2:
+                    final link = await context.read<HomeBloc>().getSongLink(song.id);
+                    context.read<LibraryBloc>().downloadSong(link, song.id);
+                    break;
+                }
+              },
               itemBuilder: (context) => [
-                PopupMenuItem(
-                  onTap: () => 0,
-                  child: const Text("Add to Library"),
+                const PopupMenuItem(
+                  value: 0,
+                  child: Text("Remove from Library"),
                 ),
+                if (song.filePath != null)
+                  const PopupMenuItem(
+                    value: 1,
+                    child: Text("Remove from Download"),
+                  ),
+                if (song.filePath == null)
+                  const PopupMenuItem(
+                    value: 2,
+                    child: Text("Download"),
+                  ),
               ],
             ),
           ],

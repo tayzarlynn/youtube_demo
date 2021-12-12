@@ -13,8 +13,7 @@ class HomeBloc extends ChangeNotifier {
   List<SearchVideo>? searchVideos;
 
   void onSearchTextChanged(String value) {
-    EasyDebounce.debounce('my-debounce', const Duration(milliseconds: 500),
-        () => _searchSong(value));
+    EasyDebounce.debounce('my-debounce', const Duration(milliseconds: 500), () => _searchSong(value));
   }
 
   void _searchSong(String query) {
@@ -26,11 +25,15 @@ class HomeBloc extends ChangeNotifier {
 
   Future<String> onTapSong(String id) async {
     List<String> _urls = [];
-    final StreamManifest manifest =
-        await YoutubeExplode().videos.streamsClient.getManifest(id);
+    final StreamManifest manifest = await YoutubeExplode().videos.streamsClient.getManifest(id);
     for (final AudioStreamInfo i in manifest.audioOnly) {
       _urls.add(i.url.toString()); //add all url with different codec
     }
     return Future.value(_urls[0]); //get the highest codec with mp4 format
+  }
+
+  Future<String> getSongLink(id) async {
+    final StreamManifest manifest = await YoutubeExplode().videos.streamsClient.getManifest(id);
+    return manifest.audioOnly[0].url.toString();
   }
 }
